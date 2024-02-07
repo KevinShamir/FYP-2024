@@ -17,7 +17,7 @@ To amend for debugging
 3) distanceScan = ultrasonicScan();
 4) fanTiming
 
-
+Author : Shamir Kevin
 
 */
 
