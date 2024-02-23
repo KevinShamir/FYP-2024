@@ -114,7 +114,7 @@ char input;
 int firstFilled = 0;    //logic to indicate the first row of a magazine that contains a glass slide
 int magazineBreak = 0;  //logic to determine the need to exit the while loop of 1 magazine
 int magazine_num;
-int magazineCount = 0;  //global count of number of magazines used, init value is 0
+int magazineCount;  //global count of number of magazines used, init value is 0
 
 
 
@@ -275,6 +275,7 @@ void loop() {
     String message = Serial.readStringUntil('\n');
 
     if (message.equals("Start")) {
+      magazineCount=0;//Reset magazineCount
       delay(5);                    //short delay
       Serial.println("Received");  // Send Received message to Raspi
 
