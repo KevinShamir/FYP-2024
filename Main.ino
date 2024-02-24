@@ -286,8 +286,6 @@ void loop() {
             longitudinalReset(); //Reset longitudinal arm to its limit switch position - UNCOMMENT
             verticalReset();// Reset vertical arm to its limit switch position - UNCOMMENT
             lateralReset(); //Reset lateral arm to its limit switch position - UNCOMMENT
-            
-            //carrosselReset(); //Reset input magazine towards limit switch. No check with laser sensor needed as check is done with limit switch - OBSOLETE
             Serial.println("Received");  // Send Received message to Raspi
 
             while (1) {
