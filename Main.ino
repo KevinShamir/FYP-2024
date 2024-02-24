@@ -2,11 +2,7 @@
 !! REMINDERS !! - Check all CONFIRMED?
 
 1) Set default dirPin to clockwise and ensure dirPin in carrosselReset (x2) is Anticlockwise and alternate 
-2) Amend lateral speed and lateralPickup values. Amend lateral direction value in code
-3) Amend vertical speed and verticalPickup values. Amend vertical direction value in code
-4) Amend longitduinal speed and longitudinalPickup values. Amend longitudinal direction value in code
-5) Amend U.S distance to glass slide
-6) QR scanner has to be at highest position --> higher than top most row of output magazine
+2) Amend U.S distance to glass slide
 */
 
 /*
