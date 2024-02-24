@@ -6,8 +6,7 @@
 3) Amend vertical speed and verticalPickup values. Amend vertical direction value in code
 4) Amend longitduinal speed and longitudinalPickup values. Amend longitudinal direction value in code
 5) Amend U.S distance to glass slide
-6) Dir 1 is ACW, 0 is CW
-7) QR scanner has to be at highest position --> higher than top most row of output magazine
+6) QR scanner has to be at highest position --> higher than top most row of output magazine
 */
 
 /*
@@ -321,11 +320,9 @@ void loop() {
                   
 
                   //Bring Lateral, vertical slides to pickup place
-                  motorStep(lateralPickup, pul3, dir3, 0, lateralSpeed);  //Rotate lateral motor clockwise. !!Reminder to amend the steps and direction
+                  motorStep(lateralPickup, pul3, dir3, 0, lateralSpeed);  // Reviewed
                   delay(5);                                               // Short delay before activating vertical system
-
-
-                  motorStep(verticalPickup, pul4, dir4, 0, verticalSpeed);  // Rotate vertical motor clockwise. !!Reminder to amend the steps and direction
+                  motorStep(verticalPickup, pul4, dir4, 1, verticalSpeed);  // Reviewed
                   delay(1000);                                              //delay of 1 second before opening gripper mouth
                   //Serial.println("Im at the pickup"); //debug
 
@@ -334,24 +331,24 @@ void loop() {
                     //Serial.println("Im in the glass slide count while loop"); //debug
                     gripper(gripperOpen);                                             //open Gripper mouth
                     delay(5);                                                         //short delay
-                    motorStep(longitudinalPickup, pul2, dir2, 0, longitudinalSpeed);  //Rotate longitudinal motor clockwise. !!Reminder to amend the steps and direction
+                    motorStep(longitudinalPickup, pul2, dir2, 0, longitudinalSpeed);  //Reviewed
                     delay(1000);                                                      //1s delay before closing gripper mouth
                     gripper(gripperClose);                                            //Close Gripper Mouth
                     glassSlideCount++;                                                //Increase glassSlideCount by 1
                     //Serial.println("Ive added glass slide count"); //debug
 
                     //Bring longitudinal, lateral and vertical to scanning intermediate point. Intermediate point (logitudinally) is in between magazine @ pickup and gripper position before moving logitudinally to the magazine
-                    motorStep(longitudinalScanIntermediate, pul2, dir2, 1, longitudinalSpeed);  //Rotate longitudinal motor anticlockwise. !! Remember to amend the steps and direction. Must be OPPOSITE to movement towards the magazine!
-                    delay(5);                                                                   //Short delay before activating lateral system
-                    motorStep(lateralScan, pul3, dir3, 1, lateralSpeed);                        //Rotate lateral motor anticlockwise. !! Reminder to amend the steps and direction. Must be OPPOSITE to movement towards the magazine!
+                    motorStep(longitudinalScanIntermediate, pul2, dir2, 1, longitudinalSpeed);  //Reviewed
+                    delay(5); //short delay before activating lateral system
+                    motorStep(verticalScan, pul4, dir4, 0, verticalSpeed);                      //Reviewed
+                    delay(5);                                                                   //Short delay before activating Lateral system                                                                  
+                    motorStep(lateralScan, pul3, dir3, 0, lateralSpeed);                        //Reviewed
                     delay(5);                                                                   //Short delay before activating vertical system
-                    motorStep(verticalScan, pul4, dir4, 0, verticalSpeed);                      //Rotate vertical motor clockwise. !!Remember to amend the steps and direction. Direction needs to be validated
-                    delay(5);                                                                   //Short delay before activating longitudinal system
                     //Serial.println("I am at the Interim point"); //debug
                     //delay(5000); //debug
 
                     //Bring longitudinal arm to scanning point, scan using ultrasonic sensor
-                    motorStep(longitudinalScan, pul2, dir2, 0, longitudinalSpeed);  //Rotate longitudinal motor clockwise. !! Remember to amend the steps and direction. Must be OPPOSITE to movement towards the magazine!
+                    motorStep(longitudinalScan, pul2, dir2, 0, longitudinalSpeed);  //Reviewed
                     int summation = 0;                                              // placeholder to store summation value
                     for (int i = 0; i < 6; i++) {
                       distanceScan = 1;  // ultrasonicScan(); //Record distance glass slide is from ultrasonic sensor over 6 iterations. ignore the value from first iterations - CHANGE?
