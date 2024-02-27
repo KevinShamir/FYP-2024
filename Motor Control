@@ -1,1 +1,159 @@
+/*
+Case Numbers:
+
+1 - Lateral
+2 - Vertical
+3 - Longitduinal
+*/
+// define Case Number
+const int caseNum = 2; // ADJUST
+
+// define pins numbers
+
+//General
+int pulPin;
+int dirPin;
+int limitSwitch;
+int direction;
+int speed;
+
+//Lateral
+const int pulPin1 = 7;  //stepper pul pin
+
+const int dirPin1 = 8;  //stepper dir pin
+
+const int speed1 = 800;  //motorspeed. Higher = slower
+
+const int limitSwitch1 = 23;  //limit switch pin
+const int direction1 = 0; //Main direction away from limit switch
+
+//Vertical
+const int pulPin2 = 11;  //stepper pul pin
+
+const int dirPin2 = 12;  //stepper dir pin
+
+const int speed2 = 800;  //motorspeed. Higher = slower
+
+const int limitSwitch2 = 28;  //limit switch pin
+const int direction2 = 1; //Main direction away from limit switch
+
+//Longitudinal
+const int pulPin3 = 9;  //stepper pul pin
+
+const int dirPin3 = 10;  //stepper dir pin
+
+const int speed3 = 500;  //motorspeed. Higher = slower
+
+const int limitSwitch3 = 29;  //limit switch pin
+const int direction3 = 0; //Main direction away from limit switch
+
+// define constants
+
+long number;  // stepper steps
+
+
+
+
+void setup() {
+  Serial.begin(9600);
+
+  if(caseNum == 1){
+     // put your setup code here, to run once:
+    pulPin = pulPin1;
+    dirPin = dirPin1;
+    limitSwitch = limitSwitch1;
+    direction = direction1;
+    speed = speed1;
+
+    pinMode(pulPin, OUTPUT);
+
+    pinMode(dirPin, OUTPUT);
+
+    digitalWrite(dirPin, direction);  // Change!
+    pinMode(limitSwitch,INPUT_PULLUP);
+
+  }
+  else if(caseNum == 2){
+    // put your setup code here, to run once:
+    pulPin = pulPin2;
+    dirPin = dirPin2;
+    limitSwitch = limitSwitch2;
+    direction = direction2;
+    speed = speed2;
+
+    pinMode(pulPin, OUTPUT);
+
+    pinMode(dirPin, OUTPUT);
+
+    digitalWrite(dirPin, direction);  // Change!
+    pinMode(limitSwitch,INPUT_PULLUP);
+
+
+  }
+  else{
+
+    // put your setup code here, to run once:
+    pulPin = pulPin3;
+    dirPin = dirPin3;
+    limitSwitch = limitSwitch3;
+    direction = direction3;
+    speed = speed3;
+
+    pinMode(pulPin, OUTPUT);
+
+    pinMode(dirPin, OUTPUT);
+
+    digitalWrite(dirPin, direction);  // Change!
+    pinMode(limitSwitch,INPUT_PULLUP);
+
+  }
+}
+
+void motorStep(long MAX) {
+
+
+  for (long x = 0; x < MAX; x++) {
+
+    digitalWrite(pulPin, HIGH);
+
+    delayMicroseconds(speed);
+
+    digitalWrite(pulPin, LOW);
+
+    delayMicroseconds(speed);
+  }
+}
+
+void Reset() {
+  //digitalWrite(dirPin,LOW);
+  digitalWrite(dirPin, abs(direction-1));  // Change!
+  int state = 1;
+  while (state) {
+    digitalWrite(pulPin, HIGH);
+    delayMicroseconds(speed);
+    digitalWrite(pulPin, LOW);
+    delayMicroseconds(speed);
+    if (digitalRead(limitSwitch) == HIGH) {
+      state = 0;                  //stop moving once switch is hit
+      digitalWrite(dirPin, direction);  //CHANGE!
+                                  //digitalWrite(dirPin,HIGH);
+    }
+  }
+}
+
+void loop() {
+  Serial.println("Enter number of steps or Press 1 to reset to limit switch");
+  while (1) {
+    if (Serial.available() > 0) {  // Check if there is data available to read
+      number = Serial.parseInt();  // Read the input number from the Serial Monitor
+      break;
+    }
+  }
+  if (number==1) {
+  Reset();
+  } 
+  else {
+    motorStep(number);
+  }
+}
 
