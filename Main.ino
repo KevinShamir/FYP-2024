@@ -353,7 +353,7 @@ void loop() {
                       }
                     }
                     Serial.print(summation);
-                    distanceScan = (summation / 5);  //assign summation value to distanceScan
+                    distanceScan = (summation / 10);  //assign summation value to distanceScan
                     summation = 0;
                     Serial.println("I have completed US Scanning"); //debug
                     Serial.print(distanceScan); //debug for distance scan
@@ -394,13 +394,13 @@ void loop() {
                       motorStep(longitudinalScan, pul2, dir2, 0, longitudinalSpeed);  //Rotate longitudinal motor clockwise. !! Remember to amend the steps and direction. Must be OPPOSITE to movement towards the magazine!
                       delay(5);                                                       //Short delay before measuring distance
                       int summation = 0;                                              // placeholder to store summation value
-                      for (int i = 0; i < 6; i++) {
-                        distanceScan = 1;  //ultrasonicScan(); //Record distance glass slide is from ultrasonic sensor over 6 iterations. ignore the value from first iterations
+                      for (int i = 0; i < 11; i++) {
+                        distanceScan = ultrasonicScan(); //Record distance glass slide is from ultrasonic sensor over 6 iterations. ignore the value from first iterations
                         if (i > 0) {
                           summation = summation + distanceScan;
                         }
                       }
-                      distanceScan = (summation / 5);  //assign summation value to distanceScan
+                      distanceScan = (summation / 10);  //assign summation value to distanceScan
                       summation = 0;
                     }
 
