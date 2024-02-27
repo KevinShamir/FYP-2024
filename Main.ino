@@ -60,13 +60,13 @@ Servo gripperServo;  //Create servo object to control to gripperServo
 const int servoMin = 500;
 const int servoMax = 2540;
 const int forceClose = 180;            //Used to force close the gripper
-const int gripperOpen = 140;           //need amending
+const int gripperOpen = 150;           //need amending
 const int gripperClose = forceClose;  //closing value is going to be the same value as forceClose
 
 Servo carroServo;            //create servo object to control carroServo
 int carroInput = 180;  // CONFIRMED?
-int carroFan = 100;     // CONFIRMED?
-int carroPickup = 7;   // CONFIRMED?
+int carroFan = 90;     // CONFIRMED?
+int carroPickup = 1;   // CONFIRMED?
 
 
 //Coordinates Initialisation
@@ -89,7 +89,7 @@ const int verticalScan = 2870;                  //Steps to move the vertical bas
 
 //MotorSpeed initialisation
 const int lateralSpeed = 800;          //delay value in microseconds CONFIRMED? -YES
-const int verticalSpeed = 500;         //delay value in microseconds CONFIRMED? - YES
+const int verticalSpeed = 800;         //delay value in microseconds CONFIRMED? - YES
 const int longitudinalSpeed = 500;  //delay value in microseconds CONFIRMED?
 
 //U.S Variables
@@ -175,9 +175,9 @@ void verticalReset() {
   int state = 1;
   while (state) {
     digitalWrite(pul4, HIGH);
-    delayMicroseconds(400);
+    delayMicroseconds(800);
     digitalWrite(pul4, LOW);
-    delayMicroseconds(400);
+    delayMicroseconds(800);
     if (digitalRead(homeSwitchVertical) == HIGH) {
       state = 0;                 //stop moving once switch is hit
       digitalWrite(dir4, HIGH);  //Set motor rotating direction to clockwise default
@@ -281,11 +281,12 @@ void loop() {
           if (magazine_num > 0 && magazine_num == int(magazine_num)) {
             //Serial.println(magazine_num); //for debugging
             //Serial.print(magazine_num+1); //debugging
-            carro(carroInput);
             delay(1000);  //short delay of 1 second
             longitudinalReset(); //Reset longitudinal arm to its limit switch position - UNCOMMENT
             verticalReset();// Reset vertical arm to its limit switch position - UNCOMMENT
             lateralReset(); //Reset lateral arm to its limit switch position - UNCOMMENT
+            motorStep(lateralPickup+lateralScan, pul3, dir3, 0, lateralSpeed);  // Move lateral system to avoid hitting carrossel
+            carro(carroInput);
             Serial.println("Received");  // Send Received message to Raspi
 
             while (1) {
@@ -310,6 +311,7 @@ void loop() {
                   delay(1000);  //Delay of 1 second before rotating to pickup area
                   carro(carroPickup);
                   delay(5);  //Short delay before activating Lateral system
+                  lateralReset(); //Reset lateral arm to its limit switch position - UNCOMMENT
 
                   
 
