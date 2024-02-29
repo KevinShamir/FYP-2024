@@ -100,9 +100,9 @@ long distanceScan;           // Used to store distance value
 
 //Others
 const int fanTiming = 15000;          //1 seconds fan duration, in milli seconds CONFIRMED?
-int glassSlideCount = 0;             // Current number of glass slides in the magazine
-const int glassSlideMax = 30;        // Max number of glass slides in one magazine
-const int glassSlideStepInput = 50;  //Number of motor steps between each glass slide in the magazine input CONFIRMED?
+long glassSlideCount = 0;             // Current number of glass slides in the magazine
+const long glassSlideMax = 30;        // Max number of glass slides in one magazine
+const long glassSlideStepInput = 3600;  //Number of motor steps between each glass slide in the magazine input CONFIRMED?
 const int scanDuration = 5000;       //max period of 5 seconds for barcode scanner to read QR Code once it is placed under the scanner CONFIRMED?
 unsigned long start, finished, elapsed;
 char input;
@@ -322,7 +322,7 @@ void loop() {
                   delay(1000);                                              //delay of 1 second before opening gripper mouth
                   //Serial.println("Im at the pickup"); //debug
 
-                  while (glassSlideCount < 3) {  //CHANGE? to 30
+                  while (glassSlideCount < glassSlideMax) {  //CHANGE? to 30
                     //Open gripper and move to magazine and close gripper
                     //Serial.println("Im in the glass slide count while loop"); //debug
                     gripper(gripperOpen);                                             //open Gripper mouth
@@ -363,7 +363,7 @@ void loop() {
                         break;              //exit out of the while loop to exit of the magazine loop
                       }
 
-                      int verticalDeduction = glassSlideCount * glassSlideStepInput;
+                      long verticalDeduction = glassSlideCount * glassSlideStepInput;
                       motorStep(longitudinalScan, pul2, dir2, 1, longitudinalSpeed);              //Rotate longitudinal motor anticlockwise. !! Remember to amend the steps and direction. Must be OPPOSITE to movement towards the magazine!
                       delay(5);                                                                   //Short delay before activating longitudinal system
                       motorStep(verticalScan + verticalDeduction, pul4, dir4, 1, verticalSpeed);  //Rotate vertical motor anticlockwise. !!Remember to amend the steps and direction. Direction needs to be validated
@@ -477,7 +477,7 @@ void loop() {
                     //Bring gripper to input magazine
                     motorStep(coordinate3 + (longitudinalPickup - longitudinalScanIntermediate), pul2, dir2, 1, longitudinalSpeed);  //Rotate longitudinal motor Anticlockwise. !!Reminder to amend the steps and direction. Change direction
                     delay(5);                                                                                                        //short delay
-                    int verticalDeduction = glassSlideCount * glassSlideStepInput;
+                    long verticalDeduction = glassSlideCount * glassSlideStepInput;
                     motorStep(abs(coordinate2 - verticalScan) - verticalDeduction, pul4, dir4, 0, verticalSpeed);  //Rotate vertical motor anticlockwise. !!Remember to amend the steps and direction. Change direction
                     delay(5);                                                                                      //short delay
                     motorStep(coordinate1 + lateralScan, pul3, dir3, 0, lateralSpeed);                             //Rotate lateral motor clockwise. !! Reminder to amend the steps and direction. Change direction
