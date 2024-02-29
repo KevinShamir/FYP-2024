@@ -81,11 +81,11 @@ char coordinateMessage[20];  //maximum size of message
 //const int pickup = 50;                        //steps to rotate from fan to pickup area 90 degrees CONFIRMED?
 const long lateralPickup = 800;                 //Steps to move lateral base from LIMIT SWITCH LATERAL to PICKUP POINT CONFIRMED?
 const long verticalPickup = 99200;                //Steps to move vertical base from LIMIT SWITCH LATERAL to PICKUP POINT CONFIRMED?
-const long longitudinalPickup = 1280;            //Steps to move the longitudinal base from LIMIT SWITCH LATERAL to magazine CONFIRMED?
-const long longitudinalScanIntermediate = 1280;  //Steps to move the longitudinal base from magazine to an intermediate pickup, before QR Scanning CONFIRMED?
+const long longitudinalPickup = 1250;            //Steps to move the longitudinal base from LIMIT SWITCH LATERAL to magazine CONFIRMED?
+const long longitudinalScanIntermediate = 1250;  //Steps to move the longitudinal base from magazine to an intermediate pickup, before QR Scanning CONFIRMED?
 const long longitudinalScan = 300;              // Steps to move the longitudinal base from intermediate to scanning area (Both barcode and U.S) CONFIRMED?
-const long lateralScan = 2600;                   //Steps to move the lateral base from pickup to QR Scanning CONFIRMED?
-const long verticalScan = 2870;                  //Steps to move the vertical base from pickup to QR Scanning CONFIRMED?
+const long lateralScan = 3200;                   //Steps to move the lateral base from pickup to QR Scanning CONFIRMED?
+const long verticalScan = 99200;                  //Steps to move the vertical base from pickup to QR Scanning CONFIRMED?
 
 //MotorSpeed initialisation
 const int lateralSpeed = 800;          //delay value in microseconds CONFIRMED? -YES
@@ -95,7 +95,7 @@ const int longitudinalSpeed = 700;  //delay value in microseconds CONFIRMED? - Y
 //U.S Variables
 long duration;
 int distance;
-int distanceUsToSlide = 15;  //minimum distance recorded if glass slide is placed under U.S CONFIRMED?
+int distanceUsToSlide = 11;  //minimum distance recorded if glass slide is placed under U.S CONFIRMED?
 long distanceScan;           // Used to store distance value
 
 //Others
