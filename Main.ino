@@ -70,9 +70,9 @@ int carroPickup = 1;   // CONFIRMED?
 
 
 //Coordinates Initialisation
-float coordinate1;           //lateral -- distance from barcode scanner to magazine
-float coordinate2;           //vertical-- distance from barcode scanner to magazine
-float coordinate3;           //longitudinal-- distance from barcode scanner to magazine
+long coordinate1;           //lateral -- distance from barcode scanner to magazine
+long coordinate2;           //vertical-- distance from barcode scanner to magazine
+long coordinate3;           //longitudinal-- distance from barcode scanner to magazine
 char coordinateMessage[20];  //maximum size of message
 
 
@@ -461,9 +461,9 @@ void loop() {
                     }
 
                     //Bring glass slide through longitudinal, lateral and vertical to dedicatd magazine slot
-                    motorStep(longitudinalScanIntermediate, pul2, dir2, 1, longitudinalSpeed);  //Rotate longitudinal motor anticlockwise. !! Remember to amend the steps and direction. Must be OPPOSITE to movement towards the magazine!
-                    delay(5);                                                                   //short delay before activating lateral system
-                    motorStep(coordinate1, pul3, dir3, 1, lateralSpeed);                        //Rotate lateral motor anticlockwise. !! Reminder to amend the steps and direction. Must be OPPOSITE to movement towards the magazine!
+                    motorStep(longitudinalScan, pul2, dir2, 1, longitudinalSpeed);  //Rotate longitudinal motor anticlockwise. !! Remember to amend the steps and direction. Must be OPPOSITE to movement towards the magazine!
+                    delay(5);                                                                   //Short delay                      
+                    motorStep(coordinate1, pul3, dir3, 0, lateralSpeed);                        //Rotate lateral motor anticlockwise. !! Reminder to amend the steps and direction. Must be OPPOSITE to movement towards the magazine!
                     delay(5);                                                                   //Short delay before activating vertical system
                     motorStep(coordinate2, pul4, dir4, 1, verticalSpeed);                       //Rotate vertical motor anticlockwise. !!Remember to amend the steps and direction. Direction needs to be validated
                     delay(5);                                                                   //short delay
@@ -475,13 +475,18 @@ void loop() {
 
 
                     //Bring gripper to input magazine
-                    motorStep(coordinate3 + (longitudinalPickup - longitudinalScanIntermediate), pul2, dir2, 1, longitudinalSpeed);  //Rotate longitudinal motor Anticlockwise. !!Reminder to amend the steps and direction. Change direction
+                    motorStep(coordinate3, pul2, dir2, 1, longitudinalSpeed);  //Rotate longitudinal motor Anticlockwise. !!Reminder to amend the steps and direction. Change direction
                     delay(5);                                                                                                        //short delay
                     long verticalDeduction = glassSlideCount * glassSlideStepInput;
-                    motorStep(abs(coordinate2 - verticalScan) - verticalDeduction, pul4, dir4, 0, verticalSpeed);  //Rotate vertical motor anticlockwise. !!Remember to amend the steps and direction. Change direction
+                    if(verticalPickup-verticalDeduction>coordinate2){ // Need to move vertically up from output to input
+                      motorStep(verticalScan-verticalDeduction-coordinate2, pul4, dir4, 1, verticalSpeed);  //Move upwards from output to input area
+                    }
+                    else{
+                      motorStep(coordinate2-(verticalScan-verticalDeduction), pul4, dir4, 0, verticalSpeed);  //Move downwards from output to input area
+                    }
                     delay(5);                                                                                      //short delay
-                    motorStep(coordinate1 + lateralScan, pul3, dir3, 0, lateralSpeed);                             //Rotate lateral motor clockwise. !! Reminder to amend the steps and direction. Change direction
-                    delay(5);                                                                                      //Short delay before activating vertical system
+                    motorStep(coordinate1 + lateralScan, pul3, dir3, 1, lateralSpeed);                             //Move laterally
+                    delay(5);                                                                                      //Short delay
                     //Serial.println("I am at the end of the loop for one slide"); //debug
                   }
                   if (magazine_num == 2 && magazineCount < 2) {
