@@ -45,7 +45,7 @@ const int dirPin3 = 10;  //stepper dir pin
 const int speed3 = 500;  //motorspeed. Higher = slower
 
 const int limitSwitch3 = 29;  //limit switch pin
-const int direction3 = 0; //Main direction away from limit switch
+const int direction3 = 1; //Main direction away from limit switch
 
 // define constants
 
