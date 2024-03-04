@@ -135,7 +135,7 @@ int ultrasonicScan() {
 void longitudinalReset() {
   // since the location of limit switch is already known, the direction of movement towards limit switch is also known
   //digitalWrite(dirPin,LOW);
-  digitalWrite(dir2, HIGH);  // direction control
+  digitalWrite(dir2, LOW);  // direction control
   int state = 1;
   while (state) {
     digitalWrite(pul2, HIGH);
@@ -144,7 +144,7 @@ void longitudinalReset() {
     delayMicroseconds(longitudinalSpeed);
     if (digitalRead(homeSwitchLongitudinal) == HIGH) {
       state = 0;                //stop moving once switch is hit
-      digitalWrite(dir2, LOW);  //Set motor rotating direction to clockwise default
+      digitalWrite(dir2, HIGH);  //Set motor rotating direction to clockwise default
                                 //digitalWrite(dirPin,HIGH);
     }
   }
@@ -327,14 +327,14 @@ void loop() {
                     //Serial.println("Im in the glass slide count while loop"); //debug
                     gripper(gripperOpen);                                             //open Gripper mouth
                     delay(5);                                                         //short delay
-                    motorStep(longitudinalPickup, pul2, dir2, 0, longitudinalSpeed);  //Reviewed
+                    motorStep(longitudinalPickup, pul2, dir2, 1, longitudinalSpeed);  //Reviewed
                     delay(1000);                                                      //1s delay before closing gripper mouth
                     gripper(gripperClose);                                            //Close Gripper Mouth
                     glassSlideCount++;                                                //Increase glassSlideCount by 1
                     //Serial.println("Ive added glass slide count"); //debug
 
                     //Bring longitudinal, lateral and vertical to scanning intermediate point. Intermediate point (logitudinally) is in between magazine @ pickup and gripper position before moving logitudinally to the magazine
-                    motorStep(longitudinalScanIntermediate, pul2, dir2, 1, longitudinalSpeed);  //Reviewed
+                    motorStep(longitudinalScanIntermediate, pul2, dir2, 0, longitudinalSpeed);  //Reviewed
                     delay(5); //short delay before activating lateral system
                     motorStep(verticalScan, pul4, dir4, 0, verticalSpeed);                      //Reviewed
                     delay(5);                                                                   //Short delay before activating Lateral system                                                                  
@@ -344,7 +344,7 @@ void loop() {
                     //delay(5000); //debug
 
                     //Bring longitudinal arm to scanning point, scan using ultrasonic sensor
-                    motorStep(longitudinalScan, pul2, dir2, 0, longitudinalSpeed);  //Reviewed
+                    motorStep(longitudinalScan, pul2, dir2, 1, longitudinalSpeed);  //Reviewed
                     int summation = 0;                                              // placeholder to store summation value
                     for (int i = 0; i < 6; i++) {
                       distanceScan = 1;  // ultrasonicScan(); //Record distance glass slide is from ultrasonic sensor over 6 iterations. ignore the value from first iterations - CHANGE?
@@ -364,7 +364,7 @@ void loop() {
                       }
 
                       long verticalDeduction = glassSlideCount * glassSlideStepInput;
-                      motorStep(longitudinalScan, pul2, dir2, 1, longitudinalSpeed);              //Rotate longitudinal motor anticlockwise. !! Remember to amend the steps and direction. Must be OPPOSITE to movement towards the magazine!
+                      motorStep(longitudinalScan, pul2, dir2, 0, longitudinalSpeed);              //Rotate longitudinal motor anticlockwise. !! Remember to amend the steps and direction. Must be OPPOSITE to movement towards the magazine!
                       delay(5);                                                                   //Short delay before activating longitudinal system
                       motorStep(verticalScan + verticalDeduction, pul4, dir4, 1, verticalSpeed);  //Rotate vertical motor anticlockwise. !!Remember to amend the steps and direction. Direction needs to be validated
                       delay(5);                                                                   //Short delay before activating longitudinal system
@@ -374,14 +374,14 @@ void loop() {
                       //Open gripper and move to magazine and close gripper
                       gripper(gripperOpen);                                                       //open Gripper mouth
                       delay(5);                                                                   //short delay
-                      motorStep(longitudinalScanIntermediate, pul2, dir2, 0, longitudinalSpeed);  //Rotate longitudinal motor clockwise. !! Remember to amend the steps and direction. Must be OPPOSITE to movement towards the magazine!
+                      motorStep(longitudinalScanIntermediate, pul2, dir2, 1, longitudinalSpeed);  //Rotate longitudinal motor clockwise. !! Remember to amend the steps and direction. Must be OPPOSITE to movement towards the magazine!
                       delay(1000);                                                                //1s delay before closing gripper mouth
                       gripper(gripperClose);                                                      //Close Gripper Mouth
                       glassSlideCount++;                                                          //increase glassSlideCount by 1
 
 
                       //Bring longitudinal, lateral and vertical to scanning intermediate point,
-                      motorStep(longitudinalScanIntermediate, pul2, dir2, 1, longitudinalSpeed);  //Rotate longitudinal motor anticlockwise. !! Remember to amend the steps and direction. Must be OPPOSITE to movement towards the magazine!
+                      motorStep(longitudinalScanIntermediate, pul2, dir2, 0, longitudinalSpeed);  //Rotate longitudinal motor anticlockwise. !! Remember to amend the steps and direction. Must be OPPOSITE to movement towards the magazine!
                       delay(5);                                                                   //Short delay before activating lateral system
                       motorStep(lateralScan, pul3, dir3, 1, lateralSpeed);                        //Rotate lateral motor anticlockwise. !! Reminder to amend the steps and direction. Must be OPPOSITE to movement towards the magazine!
                       delay(5);                                                                   //Short delay before activating vertical system
@@ -389,7 +389,7 @@ void loop() {
                       delay(5);                                                                   //Short delay before activating longitudinal system
 
                       //Bring longitudinal to scanning point, scan using ultrasonic sensor
-                      motorStep(longitudinalScan, pul2, dir2, 0, longitudinalSpeed);  //Rotate longitudinal motor clockwise. !! Remember to amend the steps and direction. Must be OPPOSITE to movement towards the magazine!
+                      motorStep(longitudinalScan, pul2, dir2, 1, longitudinalSpeed);  //Rotate longitudinal motor clockwise. !! Remember to amend the steps and direction. Must be OPPOSITE to movement towards the magazine!
                       delay(5);                                                       //Short delay before measuring distance
                       int summation = 0;                                              // placeholder to store summation value
                       for (int i = 0; i < 6; i++) {
@@ -461,13 +461,13 @@ void loop() {
                     }
 
                     //Bring glass slide through longitudinal, lateral and vertical to dedicatd magazine slot
-                    motorStep(longitudinalScan, pul2, dir2, 1, longitudinalSpeed);  //Rotate longitudinal motor anticlockwise. !! Remember to amend the steps and direction. Must be OPPOSITE to movement towards the magazine!
+                    motorStep(longitudinalScan, pul2, dir2, 0, longitudinalSpeed);  //Rotate longitudinal motor anticlockwise. !! Remember to amend the steps and direction. Must be OPPOSITE to movement towards the magazine!
                     delay(5);                                                                   //Short delay                      
                     motorStep(coordinate1, pul3, dir3, 0, lateralSpeed);                        //Rotate lateral motor anticlockwise. !! Reminder to amend the steps and direction. Must be OPPOSITE to movement towards the magazine!
                     delay(5);                                                                   //Short delay before activating vertical system
                     motorStep(coordinate2, pul4, dir4, 1, verticalSpeed);                       //Rotate vertical motor anticlockwise. !!Remember to amend the steps and direction. Direction needs to be validated
                     delay(5);                                                                   //short delay
-                    motorStep(coordinate3, pul2, dir2, 0, longitudinalSpeed);                   //Rotate longitudinal motor clockwise. !!Reminder to amend the steps and direction
+                    motorStep(coordinate3, pul2, dir2, 1, longitudinalSpeed);                   //Rotate longitudinal motor clockwise. !!Reminder to amend the steps and direction
                     delay(1000);                                                                //1s delay before closing gripper mouth
                     gripper(gripperOpen);                                                       //Open Gripper Mouth
                     delay(1000);                                                                //1s delay before moving back to pickup area
@@ -475,7 +475,7 @@ void loop() {
 
 
                     //Bring gripper to input magazine
-                    motorStep(coordinate3, pul2, dir2, 1, longitudinalSpeed);  //Rotate longitudinal motor Anticlockwise. !!Reminder to amend the steps and direction. Change direction
+                    motorStep(coordinate3, pul2, dir2, 0, longitudinalSpeed);  //Rotate longitudinal motor Anticlockwise. !!Reminder to amend the steps and direction. Change direction
                     delay(5);                                                                                                        //short delay
                     long verticalDeduction = glassSlideCount * glassSlideStepInput;
                     if(verticalPickup-verticalDeduction>coordinate2){ // Need to move vertically up from output to input
