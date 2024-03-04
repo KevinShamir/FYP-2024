@@ -6,7 +6,7 @@ Case Numbers:
 3 - Longitduinal
 */
 // define Case Number
-const int caseNum = 2; // ADJUST
+const int caseNum = 3; // ADJUST
 
 // define pins numbers
 
@@ -32,7 +32,7 @@ const int pulPin2 = 11;  //stepper pul pin
 
 const int dirPin2 = 12;  //stepper dir pin
 
-const int speed2 = 800;  //motorspeed. Higher = slower
+const int speed2 = 20;  //motorspeed. Higher = slower
 
 const int limitSwitch2 = 28;  //limit switch pin
 const int direction2 = 1; //Main direction away from limit switch
@@ -42,7 +42,7 @@ const int pulPin3 = 9;  //stepper pul pin
 
 const int dirPin3 = 10;  //stepper dir pin
 
-const int speed3 = 500;  //motorspeed. Higher = slower
+const int speed3 = 20;  //motorspeed. Higher = slower
 
 const int limitSwitch3 = 29;  //limit switch pin
 const int direction3 = 1; //Main direction away from limit switch
@@ -156,4 +156,3 @@ void loop() {
     motorStep(number);
   }
 }
-
