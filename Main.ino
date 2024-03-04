@@ -60,7 +60,7 @@ Servo gripperServo;  //Create servo object to control to gripperServo
 const int servoMin = 500;
 const int servoMax = 2540;
 const int forceClose = 180;            //Used to force close the gripper
-const int gripperOpen = 160;           //need amending
+const int gripperOpen = 165;           //need amending
 const int gripperClose = forceClose;  //closing value is going to be the same value as forceClose
 
 Servo carroServo;            //create servo object to control carroServo
@@ -79,30 +79,30 @@ char coordinateMessage[20];  //maximum size of message
 // MotorSteps initialisation -- 1 Revolution is 200 steps
 //const int fan = 50;                           // steps to rotate to fan from input area 90 degrees CONFIRMED?
 //const int pickup = 50;                        //steps to rotate from fan to pickup area 90 degrees CONFIRMED?
-const long lateralPickup = 800;                 //Steps to move lateral base from LIMIT SWITCH LATERAL to PICKUP POINT CONFIRMED?
-const long verticalPickup = 99200;                //Steps to move vertical base from LIMIT SWITCH LATERAL to PICKUP POINT CONFIRMED?
-const long longitudinalPickup = 1250;            //Steps to move the longitudinal base from LIMIT SWITCH LATERAL to magazine CONFIRMED?
-const long longitudinalScanIntermediate = 1250;  //Steps to move the longitudinal base from magazine to an intermediate pickup, before QR Scanning CONFIRMED?
-const long longitudinalScan = 300;              // Steps to move the longitudinal base from intermediate to scanning area (Both barcode and U.S) CONFIRMED?
-const long lateralScan = 3200;                   //Steps to move the lateral base from pickup to QR Scanning CONFIRMED?
-const long verticalScan = 99200;                  //Steps to move the vertical base from pickup to QR Scanning CONFIRMED?
+const long lateralPickup = 1000;                 //Steps to move lateral base from LIMIT SWITCH LATERAL to PICKUP POINT CONFIRMED?
+const long verticalPickup = 100800;                //Steps to move vertical base from LIMIT SWITCH LATERAL to PICKUP POINT CONFIRMED?
+const long longitudinalPickup = 54400;            //Steps to move the longitudinal base from LIMIT SWITCH LATERAL to magazine CONFIRMED?
+const long longitudinalScanIntermediate = 54400;  //Steps to move the longitudinal base from magazine to an intermediate pickup, before QR Scanning CONFIRMED?
+const long longitudinalScan = 16000;              // Steps to move the longitudinal base from intermediate to scanning area (Both barcode and U.S) CONFIRMED?
+const long lateralScan = 3000;                   //Steps to move the lateral base from pickup to QR Scanning CONFIRMED?
+const long verticalScan = 100800;                  //Steps to move the vertical base from pickup to QR Scanning CONFIRMED?
 
 //MotorSpeed initialisation
 const int lateralSpeed = 800;          //delay value in microseconds CONFIRMED? -YES
 const int verticalSpeed = 20;         //delay value in microseconds CONFIRMED? - YES
-const int longitudinalSpeed = 700;  //delay value in microseconds CONFIRMED? - YES
+const int longitudinalSpeed = 20;  //delay value in microseconds CONFIRMED? - YES
 
 //U.S Variables
 long duration;
 int distance;
-int distanceUsToSlide = 11;  //minimum distance recorded if glass slide is placed under U.S CONFIRMED?
+int distanceUsToSlide = 12;  //minimum distance recorded if glass slide is placed under U.S CONFIRMED?
 long distanceScan;           // Used to store distance value
 
 //Others
 const int fanTiming = 15000;          //1 seconds fan duration, in milli seconds CONFIRMED?
 long glassSlideCount = 0;             // Current number of glass slides in the magazine
 const long glassSlideMax = 30;        // Max number of glass slides in one magazine
-const long glassSlideStepInput = 3600;  //Number of motor steps between each glass slide in the magazine input CONFIRMED?
+const long glassSlideStepInput = 3200;  //Number of motor steps between each glass slide in the magazine input CONFIRMED?
 const int scanDuration = 5000;       //max period of 5 seconds for barcode scanner to read QR Code once it is placed under the scanner CONFIRMED?
 unsigned long start, finished, elapsed;
 char input;
