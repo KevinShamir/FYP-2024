@@ -4,7 +4,7 @@ void setup() {
   Serial.begin(9600);
   myservo.attach(25);
   myservo.write(180);
-// 180 to close  150 to open
+// 180 to close  165 to open
 }
 
 void loop() {
