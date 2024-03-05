@@ -61,30 +61,31 @@ const int servoMin = 500;
 const int servoMax = 2540;
 const int forceClose = 180;            //Used to force close the gripper
 const int gripperOpen = 165;           //need amending
+const int gripperOpenOutput = 153;
 const int gripperClose = forceClose;  //closing value is going to be the same value as forceClose
 
 Servo carroServo;            //create servo object to control carroServo
 int carroInput = 180;  // CONFIRMED?
-int carroFan = 90;     // CONFIRMED?
-int carroPickup = 1;   // CONFIRMED?
+int carroFan = 105;     // CONFIRMED?
+int carroPickup = 9;   // CONFIRMED?
 
 
 //Coordinates Initialisation
 long coordinate1;           //lateral -- distance from barcode scanner to magazine
 long coordinate2;           //vertical-- distance from barcode scanner to magazine
 long coordinate3;           //longitudinal-- distance from barcode scanner to magazine
-char coordinateMessage[20];  //maximum size of message
+char coordinateMessage[100];  //maximum size of message
 
 
 // MotorSteps initialisation -- 1 Revolution is 200 steps
 //const int fan = 50;                           // steps to rotate to fan from input area 90 degrees CONFIRMED?
 //const int pickup = 50;                        //steps to rotate from fan to pickup area 90 degrees CONFIRMED?
-const long lateralPickup = 1000;                 //Steps to move lateral base from LIMIT SWITCH LATERAL to PICKUP POINT CONFIRMED?
-const long verticalPickup = 100800;                //Steps to move vertical base from LIMIT SWITCH LATERAL to PICKUP POINT CONFIRMED?
+const long lateralPickup = 1150;                 //Steps to move lateral base from LIMIT SWITCH LATERAL to PICKUP POINT CONFIRMED?
+const long verticalPickup = 99600;                //Steps to move vertical base from LIMIT SWITCH LATERAL to PICKUP POINT CONFIRMED?
 const long longitudinalPickup = 54400;            //Steps to move the longitudinal base from LIMIT SWITCH LATERAL to magazine CONFIRMED?
 const long longitudinalScanIntermediate = 54400;  //Steps to move the longitudinal base from magazine to an intermediate pickup, before QR Scanning CONFIRMED?
 const long longitudinalScan = 16000;              // Steps to move the longitudinal base from intermediate to scanning area (Both barcode and U.S) CONFIRMED?
-const long lateralScan = 3000;                   //Steps to move the lateral base from pickup to QR Scanning CONFIRMED?
+const long lateralScan = 2850;                   //Steps to move the lateral base from pickup to QR Scanning CONFIRMED?
 const long verticalScan = 100800;                  //Steps to move the vertical base from pickup to QR Scanning CONFIRMED?
 
 //MotorSpeed initialisation
@@ -253,6 +254,7 @@ void setup() {
   pinMode(echoPin, INPUT);   //Sets the echoPin as an Input
   //Other pins
   pinMode(sigFan, OUTPUT);  //PWM Fan logic control
+  digitalWrite(sigFan,LOW); //set fan to off default
   gripperServo.attach(sigServo, servoMin, servoMax);
   gripperServo.write(forceClose);  //To force close the gripper
   carroServo.attach(sigCarro);
@@ -319,10 +321,11 @@ void loop() {
                   motorStep(lateralPickup, pul3, dir3, 0, lateralSpeed);  // Reviewed
                   delay(5);                                               // Short delay before activating vertical system
                   motorStep(verticalPickup, pul4, dir4, 1, verticalSpeed);  // Reviewed
-                  delay(1000);                                              //delay of 1 second before opening gripper mouth
+                                                              //delay of 1 second before opening gripper mouth
                   //Serial.println("Im at the pickup"); //debug
 
                   while (glassSlideCount < glassSlideMax) {  //CHANGE? to 30
+                    delay(1000);  
                     //Open gripper and move to magazine and close gripper
                     //Serial.println("Im in the glass slide count while loop"); //debug
                     gripper(gripperOpen);                                             //open Gripper mouth
@@ -447,6 +450,8 @@ void loop() {
                       //Serial.println("I am now waiting for the coord");// debug
                       if (Serial.available() > 0) {
                         String message = Serial.readStringUntil('\n');
+                        message.replace("(","");
+                        message.replace(")","");
                         //Serial.println(message); //debug
                         message.toCharArray(coordinateMessage, sizeof(coordinateMessage));
                         char *ptr;  // declare a pointer
@@ -454,6 +459,10 @@ void loop() {
                         coordinate1 = atof(ptr);
                         coordinate2 = atof(strtok(NULL, " , "));
                         coordinate3 = atof(strtok(NULL, " , "));
+                        Serial.println(coordinate1);
+                        Serial.println(coordinate2);
+                        Serial.println(coordinate3);
+                        //delay(10000);
                         delay(5);                    //short delay
                         Serial.println("Received");  // Send Received message to Raspi
                         break;                       //break from while loop
@@ -461,7 +470,7 @@ void loop() {
                     }
 
                     //Bring glass slide through longitudinal, lateral and vertical to dedicatd magazine slot
-                    motorStep(longitudinalScan, pul2, dir2, 0, longitudinalSpeed);  //Rotate longitudinal motor anticlockwise. !! Remember to amend the steps and direction. Must be OPPOSITE to movement towards the magazine!
+                    //motorStep(longitudinalScan, pul2, dir2, 0, longitudinalSpeed);  //Rotate longitudinal motor anticlockwise. !! Remember to amend the steps and direction. Must be OPPOSITE to movement towards the magazine!
                     delay(5);                                                                   //Short delay                      
                     motorStep(coordinate1, pul3, dir3, 0, lateralSpeed);                        //Rotate lateral motor anticlockwise. !! Reminder to amend the steps and direction. Must be OPPOSITE to movement towards the magazine!
                     delay(5);                                                                   //Short delay before activating vertical system
@@ -469,13 +478,13 @@ void loop() {
                     delay(5);                                                                   //short delay
                     motorStep(coordinate3, pul2, dir2, 1, longitudinalSpeed);                   //Rotate longitudinal motor clockwise. !!Reminder to amend the steps and direction
                     delay(1000);                                                                //1s delay before closing gripper mouth
-                    gripper(gripperOpen);                                                       //Open Gripper Mouth
+                    gripper(gripperOpenOutput);                                                       //Open Gripper Mouth
                     delay(1000);                                                                //1s delay before moving back to pickup area
                     //Serial.println("I am at the output magazine slot");//debug
 
 
                     //Bring gripper to input magazine
-                    motorStep(coordinate3, pul2, dir2, 0, longitudinalSpeed);  //Rotate longitudinal motor Anticlockwise. !!Reminder to amend the steps and direction. Change direction
+                    motorStep(coordinate3+longitudinalScan, pul2, dir2, 0, longitudinalSpeed);  //Rotate longitudinal motor Anticlockwise. !!Reminder to amend the steps and direction. Change direction
                     delay(5);                                                                                                        //short delay
                     long verticalDeduction = glassSlideCount * glassSlideStepInput;
                     if(verticalPickup-verticalDeduction>coordinate2){ // Need to move vertically up from output to input
@@ -486,7 +495,9 @@ void loop() {
                     }
                     delay(5);                                                                                      //short delay
                     motorStep(coordinate1 + lateralScan, pul3, dir3, 1, lateralSpeed);                             //Move laterally
-                    delay(5);                                                                                      //Short delay
+                    delay(5);
+                    gripper(gripperClose);
+                    delay(1000);                                                                                      //Short delay
                     //Serial.println("I am at the end of the loop for one slide"); //debug
                   }
                   if (magazine_num == 2 && magazineCount < 2) {
