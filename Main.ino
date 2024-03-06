@@ -61,7 +61,7 @@ const int servoMin = 500;
 const int servoMax = 2540;
 const int forceClose = 180;            //Used to force close the gripper
 const int gripperOpen = 165;           //need amending
-const int gripperOpenOutput = 165;
+const int gripperOpenOutput = 163;
 const int gripperClose = forceClose;  //closing value is going to be the same value as forceClose
 
 Servo carroServo;            //create servo object to control carroServo
@@ -87,6 +87,8 @@ const long longitudinalScanIntermediate = 54400;  //Steps to move the longitudin
 const long longitudinalScan = 16000;              // Steps to move the longitudinal base from intermediate to scanning area (Both barcode and U.S) CONFIRMED?
 const long lateralScan = 2850;                   //Steps to move the lateral base from pickup to QR Scanning CONFIRMED?
 const long verticalScan = 99600;                  //Steps to move the vertical base from pickup to QR Scanning CONFIRMED?
+const long outputVertical = 800 ;
+const long outputLongitudinal = 6400;
 
 //MotorSpeed initialisation
 const int lateralSpeed = 800;          //delay value in microseconds CONFIRMED? -YES
@@ -481,10 +483,14 @@ void loop() {
                     gripper(gripperOpenOutput);                                                       //Open Gripper Mouth
                     delay(1000);                                                                //1s delay before moving back to pickup area
                     //Serial.println("I am at the output magazine slot");//debug
-
-
+                    motorStep(outputVertical,pul4, dir4, 0, verticalSpeed); // Move gripper down by a bit
+                    delay(5); //short delay
                     //Bring gripper to input magazine
-                    motorStep(coordinate3+longitudinalScan, pul2, dir2, 0, longitudinalSpeed);  //Rotate longitudinal motor Anticlockwise. !!Reminder to amend the steps and direction. Change direction
+                    motorStep(outputLongitudinal, pul2, dir2, 0, longitudinalSpeed);
+                    delay(5); //short delay
+                    gripper(gripperClose); //close gripper
+                    delay(5);
+                    longitudinalReset();
                     delay(5);                                                                                                        //short delay
                     long verticalDeduction = glassSlideCount * glassSlideStepInput;
                     verticalReset();
@@ -498,9 +504,9 @@ void loop() {
                   }
                   if (magazine_num == 2 && magazineCount < 2) {
                     delay(1000);  //1 second delay before activating resets
-                    //longitudinalReset(); //Reset longitudinal arm to its limit switch position
-                    //verticalReset();// Reset vertical arm to its limit switch position
-                    //lateralReset(); //Reset lateral arm to its limit switch position
+                    longitudinalReset(); //Reset longitudinal arm to its limit switch position
+                    verticalReset();// Reset vertical arm to its limit switch position
+                    lateralReset(); //Reset lateral arm to its limit switch position
                     carro(carroInput);  // rotate carrosel back to input position
                     Serial.print("Magazine");      // message sent to Raspi to indicate the end of the first magazine. Now awaiting "Inserted message"
                   } else {
