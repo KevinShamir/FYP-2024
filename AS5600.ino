@@ -1,158 +1,85 @@
-/*
-Case Numbers:
+// defines pins numbers
 
-1 - Lateral
-2 - Vertical
-3 - Longitduinal
-*/
-// define Case Number
-const int caseNum = 2; // ADJUST
+const int pulPin = 8;
 
-// define pins numbers
+const int dirPin = 9;
 
-//General
-int pulPin;
-int dirPin;
-int limitSwitch;
-int direction;
-int speed;
+long number;
 
-//Lateral
-const int pulPin1 = 7;  //stepper pul pin
+// encoder definition
 
-const int dirPin1 = 8;  //stepper dir pin
+#include "AS5600.h"
+#include "Wire.h"
 
-const int speed1 = 800;  //motorspeed. Higher = slower
-
-const int limitSwitch1 = 23;  //limit switch pin
-const int direction1 = 0; //Main direction away from limit switch
-
-//Vertical
-const int pulPin2 = 11;  //stepper pul pin
-
-const int dirPin2 = 12;  //stepper dir pin
-
-const int speed2 = 800;  //motorspeed. Higher = slower
-
-const int limitSwitch2 = 28;  //limit switch pin
-const int direction2 = 1; //Main direction away from limit switch
-
-//Longitudinal
-const int pulPin3 = 9;  //stepper pul pin
-
-const int dirPin3 = 10;  //stepper dir pin
-
-const int speed3 = 500;  //motorspeed. Higher = slower
-
-const int limitSwitch3 = 29;  //limit switch pin
-const int direction3 = 0; //Main direction away from limit switch
-
-// define constants
-
-long number;  // stepper steps
-
-
+AS5600 as5600;   //  use default Wire
 
 
 void setup() {
   Serial.begin(9600);
 
-  if(caseNum == 1){
-     // put your setup code here, to run once:
-    pulPin = pulPin1;
-    dirPin = dirPin1;
-    limitSwitch = limitSwitch1;
-    direction = direction1;
-    speed = speed1;
+  // put your setup code here, to run once:
+  pinMode(pulPin,OUTPUT);
 
-    pinMode(pulPin, OUTPUT);
+  pinMode(dirPin,OUTPUT);
 
-    pinMode(dirPin, OUTPUT);
+  digitalWrite(dirPin,HIGH); // Enables the motor to move in a particular direction
 
-    digitalWrite(dirPin, direction);  // Change!
-    pinMode(limitSwitch,INPUT_PULLUP);
+  //encoder
+  Wire.begin();
 
-  }
-  else if(caseNum == 2){
-    // put your setup code here, to run once:
-    pulPin = pulPin2;
-    dirPin = dirPin2;
-    limitSwitch = limitSwitch2;
-    direction = direction2;
-    speed = speed2;
+  as5600.begin(2);  //  set direction pin.
+  as5600.setDirection(AS5600_CLOCK_WISE);  //  default, just be explicit.
 
-    pinMode(pulPin, OUTPUT);
+  //Serial.println(as5600.getAddress());
 
-    pinMode(dirPin, OUTPUT);
+  //  as5600.setAddress(0x40);  //  AS5600L only
 
-    digitalWrite(dirPin, direction);  // Change!
-    pinMode(limitSwitch,INPUT_PULLUP);
+  int b = as5600.isConnected();
+  //Serial.print("Connect: ");
+  //Serial.println(b);
 
+  delay(1000);
+  Serial.println("Please enter the number of Steps to be made: ");
 
-  }
-  else{
-
-    // put your setup code here, to run once:
-    pulPin = pulPin3;
-    dirPin = dirPin3;
-    limitSwitch = limitSwitch3;
-    direction = direction3;
-    speed = speed3;
-
-    pinMode(pulPin, OUTPUT);
-
-    pinMode(dirPin, OUTPUT);
-
-    digitalWrite(dirPin, direction);  // Change!
-    pinMode(limitSwitch,INPUT_PULLUP);
-
-  }
+  
 }
 
-void motorStep(long MAX) {
+void motorStep( long MAX){
 
 
-  for (long x = 0; x < MAX; x++) {
+   for(long x = 0; x < MAX; x++) {
 
-    digitalWrite(pulPin, HIGH);
+        digitalWrite(pulPin,HIGH);
 
-    delayMicroseconds(speed);
+        delayMicroseconds(500);
 
-    digitalWrite(pulPin, LOW);
+        digitalWrite(pulPin,LOW);
 
-    delayMicroseconds(speed);
-  }
-}
+        delayMicroseconds(500);
+        as5600.getCumulativePosition();
+        as5600.getRevolutions();
 
-void Reset() {
-  //digitalWrite(dirPin,LOW);
-  digitalWrite(dirPin, abs(direction-1));  // Change!
-  int state = 1;
-  while (state) {
-    digitalWrite(pulPin, HIGH);
-    delayMicroseconds(speed);
-    digitalWrite(pulPin, LOW);
-    delayMicroseconds(speed);
-    if (digitalRead(limitSwitch) == HIGH) {
-      state = 0;                  //stop moving once switch is hit
-      digitalWrite(dirPin, direction);  //CHANGE!
-                                  //digitalWrite(dirPin,HIGH);
-    }
-  }
+      }
+
 }
 
 void loop() {
-  Serial.println("Enter number of steps or Press 1 to reset to limit switch");
-  while (1) {
-    if (Serial.available() > 0) {  // Check if there is data available to read
-      number = Serial.parseInt();  // Read the input number from the Serial Monitor
-      break;
+  if (Serial.available() > 0) { // Check if there is data available to read
+    as5600.getCumulativePosition();
+    number = Serial.parseInt(); // Read the input number from the Serial Monitor
+    Serial.print("You have entered:");
+    Serial.print("\t");
+    Serial.println(number);
+    motorStep(number);
+    Serial.print("Number of steps recorded by encoder:");
+    Serial.println("\t");
+    //Serial.println(as5600.getRevolutions());
+    Serial.println(as5600.getCumulativePosition()/20.48);
+    as5600.resetPosition();
+    delay(5);
+    while (Serial.available() > 0) {
+      char c = Serial.read(); // Read and discard remaining characters in the buffer
     }
   }
-  if (number==1) {
-  Reset();
-  } 
-  else {
-    motorStep(number);
-  }
 }
+
